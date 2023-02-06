@@ -19,6 +19,18 @@
 CREATE DATABASE IF NOT EXISTS `seduc_db` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `seduc_db`;
 
+-- Copiando estrutura para tabela seduc_db.situacao_contrato
+CREATE TABLE IF NOT EXISTS `situacao_contrato` (
+  `cd_situacao` int(11) NOT NULL AUTO_INCREMENT,
+  `nm_situacao` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`cd_situacao`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- Copiando dados para a tabela seduc_db.situacao_contrato: ~2 rows (aproximadamente)
+INSERT INTO `situacao_contrato` (`cd_situacao`, `nm_situacao`) VALUES
+	(1, 'Ativo'),
+	(2, 'Inativo');
+
 -- Copiando estrutura para tabela seduc_db.contrato
 CREATE TABLE IF NOT EXISTS `contrato` (
   `cd_Contrato` int(11) NOT NULL AUTO_INCREMENT,
@@ -420,18 +432,6 @@ INSERT INTO `relatorio_has_tipo_periodo` (`cd_Relatorio`, `cd_tipoPeriodo`) VALU
 	(59, 1),
 	(59, 2),
 	(60, 1);
-
--- Copiando estrutura para tabela seduc_db.situacao_contrato
-CREATE TABLE IF NOT EXISTS `situacao_contrato` (
-  `cd_situacao` int(11) NOT NULL AUTO_INCREMENT,
-  `nm_situacao` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`cd_situacao`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- Copiando dados para a tabela seduc_db.situacao_contrato: ~2 rows (aproximadamente)
-INSERT INTO `situacao_contrato` (`cd_situacao`, `nm_situacao`) VALUES
-	(1, 'Ativo'),
-	(2, 'Inativo');
 
 -- Copiando estrutura para tabela seduc_db.situacao_obra
 CREATE TABLE IF NOT EXISTS `situacao_obra` (
