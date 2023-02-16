@@ -244,22 +244,24 @@ INSERT INTO `nivel_autoridade` (`cd_nivelAutoridade`, `nm_nivelAutoridade`) VALU
 CREATE TABLE IF NOT EXISTS `obra` (
   `cd_Obra` int(11) NOT NULL AUTO_INCREMENT,
   `cd_situacaoObra` int(11) NOT NULL,
-  `cd_Escola` int(11) NOT NULL,
   `cd_Contrato` int(11) NOT NULL,
+  `cd_Escola` int(11) NOT NULL,
   `nm_Contratante` varchar(45) DEFAULT 'Prefeitura',
   `tp_AtividadeDescricao` varchar(45) DEFAULT NULL,
+  `dt_AnoContrato` int(11) DEFAULT NULL,
   PRIMARY KEY (`cd_Obra`),
   KEY `fk_obra_situacao_obra1_idx` (`cd_situacaoObra`),
-  KEY `fk_obra_escola1_idx` (`cd_Escola`),
   KEY `fk_obra_contrato1_idx` (`cd_Contrato`),
-  CONSTRAINT `fk_obra_contrato1` FOREIGN KEY (`cd_Contrato`) REFERENCES `contrato` (`cd_Contrato`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_obra_escola1` FOREIGN KEY (`cd_Escola`) REFERENCES `escola` (`cd_Escola`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_obra_situacao_obra1` FOREIGN KEY (`cd_situacaoObra`) REFERENCES `situacao_obra` (`cd_situacaoObra`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  KEY `fk_obra_escola_has_contrato1_idx` (`cd_Escola`),
+  CONSTRAINT `fk_obra_contrato1` FOREIGN KEY (`cd_Contrato`) REFERENCES `contrato` (`cd_Contrato`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_obra_escola_has_contrato1` FOREIGN KEY (`cd_Escola`) REFERENCES `escola_has_contrato` (`cd_Escola`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_obra_situacao_obra1` FOREIGN KEY (`cd_situacaoObra`) REFERENCES `situacao_obra` (`cd_situacaoObra`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Copiando dados para a tabela seduc_db.obra: ~1 rows (aproximadamente)
-INSERT INTO `obra` (`cd_Obra`, `cd_situacaoObra`, `cd_Escola`, `cd_Contrato`, `nm_Contratante`, `tp_AtividadeDescricao`) VALUES
-	(1, 1, 7, 1, 'Prefeitura', 'teste');
+-- Copiando dados para a tabela seduc_db.obra: ~2 rows (aproximadamente)
+INSERT INTO `obra` (`cd_Obra`, `cd_situacaoObra`, `cd_Contrato`, `cd_Escola`, `nm_Contratante`, `tp_AtividadeDescricao`, `dt_AnoContrato`) VALUES
+	(1, 1, 19, 15, 'Prefeitura', 'Teste', NULL),
+	(2, 1, 1, 10, 'Prefeitura', 'Reforma', NULL);
 
 -- Copiando estrutura para view seduc_db.obraview
 -- Criando tabela temporária para evitar erros de dependência de VIEW
@@ -577,7 +579,8 @@ ON e.cd_Escola = ehc.cd_Escola
 INNER JOIN contrato c
 ON ehc.cd_Contrato = c.cd_Contrato
 INNER JOIN fornecedor f
-ON c.cd_Fornecedor = f.cd_Fornecedor ;
+ON c.cd_Fornecedor = f.cd_Fornecedor 
+GROUP BY o.cd_Obra ;
 
 -- Copiando estrutura para view seduc_db.relatorioview
 -- Removendo tabela temporária e criando a estrutura VIEW final
@@ -592,7 +595,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 			o.cd_Obra, o.tp_AtividadeDescricao, o.nm_Contratante, sto.cd_situacaoObra, sto.nm_situacaoObra, 
 			e.cd_Escola, e.nm_Escola, e.ds_Local, c.cd_Contrato, c.dt_AnoContrato, c.tp_Servico, 
 			c.dt_Inicial, c.dt_Final, c.num_contrato, c.pr_Total, stc.cd_situacao, stc.nm_situacao, f.cd_Fornecedor,
-			f.nm_Fornecedor, f.ds_Email, tpp.cd_tipoPeriodo, GROUP_CONCAT(tpp.nm_tipoPeriodo SEPARATOR ", ") As Periodo
+			f.nm_Fornecedor, f.ds_Email
 		FROM relatorio r
 		INNER JOIN situacao_relatorio str
 		ON r.cd_situacaoRelatorio = str.cd_situacaoRelatorio
@@ -613,12 +616,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 		INNER JOIN situacao_contrato stc
 		ON c.cd_situacao = stc.cd_situacao
 		INNER JOIN fornecedor f
-		ON c.cd_Fornecedor = f.cd_Fornecedor
-		INNER JOIN relatorio_has_tipo_periodo rhtp
-		ON r.cd_Relatorio = rhtp.cd_Relatorio
-		INNER JOIN tipo_periodo tpp
-		ON rhtp.cd_tipoPeriodo = tpp.cd_tipoPeriodo
-		GROUP BY rhtp.cd_Relatorio ;
+		ON c.cd_Fornecedor = f.cd_Fornecedor ;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
