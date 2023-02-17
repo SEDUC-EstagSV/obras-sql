@@ -8,3 +8,5 @@ que por padrão é desativado, inclusive quando o servidor é reiniciado.
 SET GLOBAL event_scheduler = ON;
 SHOW PROCESSLIST;
 ```
+
+**SHOW PROCESSLIST** mostra os processos ativos;
